@@ -99,7 +99,11 @@ public class GenerateQR extends AppCompatActivity {
                     passenger.setMobile(mobile);
 
 
-                    Intent i = new Intent(GenerateQR.this, ScanFingerprint.class);
+//                    Intent i = new Intent(GenerateQR.this, ScanFingerprint.class);
+//                    i.putExtra("passenger", passenger);
+//                    startActivity(i);
+//                    finish();
+                    Intent i = new Intent(GenerateQR.this, QRCode.class);
                     i.putExtra("passenger", passenger);
                     startActivity(i);
                     finish();

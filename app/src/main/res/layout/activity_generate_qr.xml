@@ -189,7 +189,7 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/button"
-                android:text="scan fingerprint "
+                android:text="Generate QR Code"
                 android:textColor="#fff" />
 
 

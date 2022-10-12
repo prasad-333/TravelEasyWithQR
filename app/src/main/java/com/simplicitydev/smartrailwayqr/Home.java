@@ -59,8 +59,14 @@ public class Home extends AppCompatActivity {
         scan_qr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i=new Intent(Home.this,Verify_Fingerprint.class);
-                startActivity(i);
+//                Intent i=new Intent(Home.this,Verify_Fingerprint.class);
+//                startActivity(i);
+
+                Intent intent = new Intent(getApplicationContext(), com.simplicitydev.smartrailwayqr.ScanQR.class);
+//                intent.putExtra(DEVICE_EXTRA, device);
+//                intent.putExtra(DEVICE_UUID, mDeviceUUID.toString());
+//                intent.putExtra(BUFFER_SIZE, mBufferSize);
+                startActivity(intent);
             }
         });
 

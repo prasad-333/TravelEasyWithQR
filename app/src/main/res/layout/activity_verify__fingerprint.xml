@@ -85,18 +85,20 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:text="scan qr code" />
+
             <Button
                 android:id="@+id/btnMatchISOTemplate"
-                android:textColor="#fff"
-                android:background="@drawable/button2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/imgFinger"
-                android:onClick="onControlClicked"
-                android:layout_marginTop="100dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:text="verify fingerprint" />
+                android:layout_marginTop="100dp"
+                android:background="@drawable/button2"
+                android:onClick="onControlClicked"
+                android:text="verify fingerprint"
+                android:textColor="#fff"
+                android:visibility="gone"/>
         </RelativeLayout>
 
     </android.support.v7.widget.CardView>

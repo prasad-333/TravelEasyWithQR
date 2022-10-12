@@ -30,6 +30,13 @@ import com.android.volley.toolbox.Volley;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.zxing.WriterException;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.Map;
 import androidmads.library.qrgenearator.QRGContents;
@@ -52,7 +59,7 @@ public class QRCode extends AppCompatActivity {
     /*FirebaseDatabase database=FirebaseDatabase.getInstance();
     DatabaseReference reference= database.getReference("passengers");*/
 
-    RequestQueue mRequestQueue;
+    //RequestQueue mRequestQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,75 +78,98 @@ public class QRCode extends AppCompatActivity {
         exit = findViewById(R.id.close);
         save=findViewById(R.id.save_img);
 
-        mRequestQueue= Volley.newRequestQueue(this);
 
-        //Toast.makeText(this, input, Toast.LENGTH_LONG).show();
+        storeLatestQRCodePNR(input);
 
-        final ProgressDialog pd = new ProgressDialog(QRCode.this);
-        pd.setMessage("Please Wait...");
-        pd.setCanceledOnTouchOutside(false);
-        pd.show();
+        WindowManager windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+        Point point = new Point();
+        display.getSize(point);
+        int width = point.x;
+        int height = point.y;
+        int smallerdimen = width < height ? width : height;
+        smallerdimen = smallerdimen * 3 / 4;
+        mQRGEncoder = new QRGEncoder(input, null, QRGContents.Type.TEXT, smallerdimen);
 
-        /*String cName=reference.push().getKey();
-        reference.child(cName).setValue(mPassenger);*/
+        try {
+            mBitmap = mQRGEncoder.encodeAsBitmap();
+            qrimg.setImageBitmap(mBitmap);
+        } catch (WriterException e) {
+            Log.v(TAG, e.toString());
+        }
 
-        StringRequest serverRq=new StringRequest(Request.Method.POST, "http://15.207.50.169/setdata.php", new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                WindowManager windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-                Display display = windowManager.getDefaultDisplay();
-                Point point = new Point();
-                display.getSize(point);
-                int width = point.x;
-                int height = point.y;
-                int smallerdimen = width < height ? width : height;
-                smallerdimen = smallerdimen * 3 / 4;
-                mQRGEncoder = new QRGEncoder(input, null, QRGContents.Type.TEXT, smallerdimen);
 
-                try {
-                    mBitmap = mQRGEncoder.encodeAsBitmap();
-                    qrimg.setImageBitmap(mBitmap);
-                } catch (WriterException e) {
-                    Log.v(TAG, e.toString());
-                }
-                pd.dismiss();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
 
-            }
-        })
-        {
-            @Override
-            public Map<String, String> getParams() throws AuthFailureError {
-
-                Map<String,String> data=new HashMap<>();
-
-                data.put("pnr",mPassenger.getPnr());
-                data.put("name",mPassenger.getName());
-                data.put("trainname",mPassenger.getTrainname());
-                data.put("trainno",mPassenger.getTrainno());
-                data.put("state",mPassenger.getState());
-                data.put("city",mPassenger.getCity());
-                data.put("source",mPassenger.getSource());
-                data.put("destination",mPassenger.getDestination());
-                data.put("date",mPassenger.getDate());
-                data.put("aadhaar",mPassenger.getAadhaar());
-                data.put("mobile",mPassenger.getMobile());
-
-                return data;
-            }
-        };
-
-        mRequestQueue.add(serverRq);
+//        mRequestQueue= Volley.newRequestQueue(this);
+//
+//        //Toast.makeText(this, input, Toast.LENGTH_LONG).show();
+//
+//        final ProgressDialog pd = new ProgressDialog(QRCode.this);
+//        pd.setMessage("Please Wait...");
+//        pd.setCanceledOnTouchOutside(false);
+//        pd.show();
+//
+//        /*String cName=reference.push().getKey();
+//        reference.child(cName).setValue(mPassenger);*/
+//
+//        StringRequest serverRq=new StringRequest(Request.Method.POST, "http://15.207.50.169/setdata.php", new Response.Listener<String>() {
+//            @Override
+//            public void onResponse(String response) {
+//                WindowManager windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+//                Display display = windowManager.getDefaultDisplay();
+//                Point point = new Point();
+//                display.getSize(point);
+//                int width = point.x;
+//                int height = point.y;
+//                int smallerdimen = width < height ? width : height;
+//                smallerdimen = smallerdimen * 3 / 4;
+//                mQRGEncoder = new QRGEncoder(input, null, QRGContents.Type.TEXT, smallerdimen);
+//
+//                try {
+//                    mBitmap = mQRGEncoder.encodeAsBitmap();
+//                    qrimg.setImageBitmap(mBitmap);
+//                } catch (WriterException e) {
+//                    Log.v(TAG, e.toString());
+//                }
+//                pd.dismiss();
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//
+//            }
+//        })
+//        {
+//            @Override
+//            public Map<String, String> getParams() throws AuthFailureError {
+//
+//                Map<String,String> data=new HashMap<>();
+//
+//                data.put("pnr",mPassenger.getPnr());
+//                data.put("name",mPassenger.getName());
+//                data.put("trainname",mPassenger.getTrainname());
+//                data.put("trainno",mPassenger.getTrainno());
+//                data.put("state",mPassenger.getState());
+//                data.put("city",mPassenger.getCity());
+//                data.put("source",mPassenger.getSource());
+//                data.put("destination",mPassenger.getDestination());
+//                data.put("date",mPassenger.getDate());
+//                data.put("aadhaar",mPassenger.getAadhaar());
+//                data.put("mobile",mPassenger.getMobile());
+//
+//                return data;
+//            }
+//        };
+//
+//        mRequestQueue.add(serverRq);
 
 
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try{
-                    QRGSaver.save(IMAGE_DIRECTORY,input.trim(),mBitmap,QRGContents.ImageType.IMAGE_JPEG);
+//                    QRGSaver.save(IMAGE_DIRECTORY,input.trim(),mBitmap,QRGContents.ImageType.IMAGE_JPEG);
+                    QRGSaver.save(IMAGE_DIRECTORY,"Railway_Ticket",mBitmap,QRGContents.ImageType.IMAGE_JPEG);
                 }
 
                 catch (Exception e){
@@ -171,5 +201,19 @@ public class QRCode extends AppCompatActivity {
         });
 
     }
+
+    private void storeLatestQRCodePNR(String input) {
+        try {
+            File file = new File(getFilesDir(), "latest_QR_PNR.txt");
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream);
+            BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
+            bufferedWriter.write(input);
+        } catch (Exception e) {
+            Log.e(TAG, "storeLatestQRCodePNR: ", e );
+            e.printStackTrace();
+        }
+    }
+
 
 }
